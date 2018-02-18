@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Börsdata.se Filtrerare</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body ng-controller="controller">
+  <div style="position: fixed;top: 0px;width: 100%;z-index: 999;">
+  <div uib-alert ng-repeat="alert in alerts" class="alert alert-{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</div>
+  </div>
+  <div role="main" class="container" style="width:95%;margin:auto;">
+
+    <div class="card">
+      <h6 class="card-header">Börsdata.se Filtrerare > Välj fil</h6>
+      <div class="card-body">
+        <form>
+          <input id="file" type="file"> <button class="btn btn-primary" ng-click="getFile()">Ladda</button>
+        </form>
+      </div>
+    </div>
+    <br/>
+    <div class="card" ng-show="showResult">
+      <h6 class="card-header">Filter</h6>
+      <div class="card-body">
+        <label for="filters">Lägg till filter</label>
+        <select id="filters" ng-change="addFilter()" ng-model="selectedFilter" ng-options="f.name for f in filterData"></select>
+        <br/>
+        <label class="form-check-label" for="val-name"><h6>Namn</h6></label>
+        <input class="form-control" type="text" ng-model="currFilter.name"/>
+        <table class="table table-hover table-striped table-sm form-group" ng-show="currFilter.data.length > 0">
+          <tr ng-repeat="o in currFilter.data">
+            <td>{{ o.name }}</td>
+            <td ng--show='o.type=="f" || o.type=="p"'><label class="form-check-label" for="val-{{o.index}}-min">min</label></td>
+            <td ng--show='o.type=="f" || o.type=="p"'><input class="form-control" type="text" id="val-{{o.index}}-min" ng-model="o.min" size="5" ng-change="filter()"/></td>
+            <td ng--show='o.type=="f" || o.type=="p"'><label class="form-check-label" for="val-{{o.index}}-max">max</label></td>
+            <td ng--show='o.type=="f" || o.type=="p"'><input class="form-control" type="text" id="val-{{o.index}}-max" ng-model="o.max" size="5" ng-change="filter()"/></td>
+
+            <td ng-show='o.type=="s"'><label  class="form-check-label"for="val-{{o.index}}-equal">innehåller</label></td>
+            <td ng-show='o.type=="s"' colspan="3"><input class="form-control" type="text" id="val-{{o.index}}-equal" ng-model="o.equal" size="40" ng-change="filter()"/></td>
+            <td><button class="btn btn-primary" style="float: right" ng-click="removeFilter(o.index)">X</button></td>
+          </tr>
+        </table>
+        <h6>Sparade filter</h6>
+          <table class="table table-hover table-striped table-sm form-group">
+            <tr ng-repeat="f in savedFilters">
+          <td><a href="" ng-click="loadFilter(f)">{{ f.name }}</a></td>
+          <td>
+              <button class="btn btn-primary" style="float: right" ng-click="removeFilterSaved(f)">X</button>
+          </td>
+        </tr>
+      </table>
+        <button class="btn btn-primary" ng-click="saveFilter()">Spara filter</button>
+
+      </div>
+    </div>
+    <br/>
+    <div class="card" ng-show="showResult">
+      <h6 class="card-header">Resultat</h6>
+      <div class="card-body" >
+        <div class="table-responsive">
+          <table class="table table-hover table-striped table-bordered table-sm">
+            <thead class="thead">
+              <tr>
+                <th ng-repeat="cell in headerData">
+                  {{ cell.name}}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='row in bodyDataFiltered | orderBy:sortOrder | limitTo:showMax'>
+                <td ng-repeat="cell in row track by $index" ng-class="getClass(cell,$index)">
+                  <span ng-if="getCellType($index) == 'p'">{{ cell | transform }}</span>
+                  <span ng-if="getCellType($index) != 'p'">{{ cell }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-primary"ng-click='showMoreResults()' ng-disabled="showMax >= bodyDataFiltered.length">Visa fler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-cookies.js"></script>
+<script src="ui-bootstrap-tpls-2.5.0.min"></script>
+<script src="app.min.js"></script>
+<script src="upload.js"></script>
+</body>
+</html>
