@@ -22,6 +22,16 @@
       </div>
     </div>
     <br/>
+    <div class="card">
+      <h6 class="card-header">Hjälp</h6>
+      <div class="card-body">
+        Denna sida skapades för att enklare kunna filtrera data från <a href="http://www.borsdata.se/" target="_blank">Börsdata.se</a>.
+        Välj en fil ovan som är exporterad från börsdata.se och tryck därefter ladda. För att lägga till olika filter klickar
+        du på listan bredvid Lägg till filter. Ett flertal kolumner i listan är av typen %-tal och där skriver du siffrorna i decimalform. Så
+        tex om du vill ha 3% skriver du 0.03 . Decimalformatet är alltså <b>.</b> och inte , .
+      </div>
+    </div>
+    <br/>
     <div class="card" ng-show="showResult">
       <h6 class="card-header">Filter</h6>
       <div class="card-body">
@@ -52,7 +62,7 @@
           </td>
         </tr>
       </table>
-        <button class="btn btn-primary" ng-click="saveFilter()">Spara filter</button>
+        <button class="btn btn-primary" ng-click="createEmptyFilter()">Skapa nytt tomt filter</button>
 
       </div>
     </div>
@@ -92,7 +102,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-cookies.js"></script>
 <script src="ui-bootstrap-tpls-2.5.0.min.js"></script>
-<script src="app.min.js"></script>
+<script src="app.js"></script>
 <script src="upload.js"></script>
 </body>
 </html>
