@@ -245,68 +245,81 @@ app.controller('controller',['$scope','$cookies','fileReader',function ($scope,$
       $scope.getFile = function () {
 
         var e = document.getElementById("file");
-        fileReader.readAsText(e.files[0], $scope)
-        .then(function(result) {
-          $scope.showResult = true;
-          $scope.filterData = new Array();
-          $scope.headerData = new Array();
-          $scope.bodyData = new Array();
-          $scope.bodyDataFiltered = new Array();
-          var lines = result.split(String.fromCharCode(13));
-          var headers = lines[0].split(";");
-          var info = lines[1].split(";");
-          var cols = result.split(";");
-          var start = headers.length*2;
-          var length = headers.length*3;
-          var j = 0;
-          var c;
-          var rows = [];
-          rows[0] = [];
-          var r = 0;
-          var v = null;
-          //add all cells
-          for(i = start-2;i<cols.length;i++){
-            c = cols[i];
-            if(j==0){
-              var temp = cols[i].split(String.fromCharCode(10));
-              c = temp[1];
-              v = temp[0];
-              if(v)
-              rows[r].push(v.replaceAll('"',''));
-              j = headers.length-1;
-              r++;
-              rows[r] = [];
-            }
-            if(c)
-            rows[r].push(c.replaceAll('"',''));
-            j--;
-          }
-          //remove empty
-          rows.shift();
-          rows.pop();
-          //replace in header
-          for(i = 0;i<headers.length;i++){
-            headers[i] = headers[i].replaceAll('"','');
-          }
-          //replace in info
-          for(i = 0;i<info.length;i++){
-            info[i] = info[i].replaceAll('"','');
-          }
-          for(i=0;i<headers.length;i++){
-            tmp = headers[i] + " " + info[i];
-            $scope.headerData.push({name:tmp,type:null});
-          }
-          //
-          for(i=0;i<rows.length;i++){
-            for(j=0;j<rows[i].length;j++){
-              $scope.determineCellType(rows[i][j],j);
-            }
-            $scope.bodyData.push(rows[i]);
-          }
+        if(e.files.length == 1){
+          var name = e.files[0].name;
+          var ext = name.substr(name.lastIndexOf('.'));
+          if(ext == ".csv"){
+            fileReader.readAsText(e.files[0], $scope)
+            .then(function(result) {
+              $scope.showResult = true;
+              $scope.filterData = new Array();
+              $scope.headerData = new Array();
+              $scope.bodyData = new Array();
+              $scope.bodyDataFiltered = new Array();
+              var lines = result.split(String.fromCharCode(13));
+              var headers = lines[0].split(";");
+              var info = lines[1].split(";");
+              var cols = result.split(";");
+              var start = headers.length*2;
+              var length = headers.length*3;
+              var j = 0;
+              var c;
+              var rows = [];
+              rows[0] = [];
+              var r = 0;
+              var v = null;
+              //add all cells
+              for(i = start-2;i<cols.length;i++){
+                c = cols[i];
+                if(j==0){
+                  var temp = cols[i].split(String.fromCharCode(10));
+                  c = temp[1];
+                  v = temp[0];
+                  if(v)
+                  rows[r].push(v.replaceAll('"',''));
+                  j = headers.length-1;
+                  r++;
+                  rows[r] = [];
+                }
+                if(c)
+                rows[r].push(c.replaceAll('"',''));
+                j--;
+              }
+              //remove empty
+              rows.shift();
+              rows.pop();
+              //replace in header
+              for(i = 0;i<headers.length;i++){
+                headers[i] = headers[i].replaceAll('"','');
+              }
+              //replace in info
+              for(i = 0;i<info.length;i++){
+                info[i] = info[i].replaceAll('"','');
+              }
+              for(i=0;i<headers.length;i++){
+                tmp = headers[i] + " " + info[i];
+                $scope.headerData.push({name:tmp,type:null});
+              }
+              //
+              for(i=0;i<rows.length;i++){
+                for(j=0;j<rows[i].length;j++){
+                  $scope.determineCellType(rows[i][j],j);
+                }
+                $scope.bodyData.push(rows[i]);
+              }
 
-          //loader
-          $scope.buildFilter();
-        });
+              //loader
+              $scope.buildFilter();
+            });
+          }else{
+            //not .csv
+            $scope.addAlert("Välj en .csv fil.","danger");
+          }
+        }else{
+          //not correct loading file...
+        }
+
+
       };
 
       $scope.showResult = false;
