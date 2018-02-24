@@ -227,8 +227,6 @@ app.controller('controller',['$scope','$cookies','fileReader',function ($scope,$
         if(cell && cell.trim().length > 0){
           if((cell.match(/[a-z]/i)) || isNaN((cell))){
             $scope.headerData[index]["type"] = "s";
-            if(index > 28 )
-              console.log(cell);
           }else{
             var t = String(cell).split(".");
             if(t[1] && String(t[1]).trim().length > 3){
